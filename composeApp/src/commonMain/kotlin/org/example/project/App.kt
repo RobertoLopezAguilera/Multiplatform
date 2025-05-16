@@ -22,11 +22,15 @@ fun App() {
 
 @Composable
 fun SuperheroSearchApp() {
-    MaterialTheme {
-        var superheroName by remember { mutableStateOf("") }
-        var superheroList by remember { mutableStateOf<List<Hero>>(emptyList()) }
-        var errorMessage by remember { mutableStateOf<String?>(null) }
+    val repository = remember { provideSuperheroRepository() }
 
+    var superheroName by remember { mutableStateOf("") }
+    var superheroList by remember { mutableStateOf<List<Hero>>(emptyList()) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
+
+    MaterialTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,9 +50,9 @@ fun SuperheroSearchApp() {
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(onClick = {
-                CoroutineScope(Dispatchers.IO).launch {
+                scope.launch {
                     try {
-                        val result = NetworkUtils.getSuperheroes(superheroName)
+                        val result = repository.getSuperheroes(superheroName)
                         superheroList = result
                         errorMessage = if (result.isEmpty()) "No se encontraron resultados." else null
                     } catch (e: Exception) {
@@ -80,7 +84,6 @@ fun SuperheroSearchApp() {
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Imagen a la izquierda
                             HeroImageView(
                                 url = hero.image.url,
                                 modifier = Modifier
@@ -88,7 +91,6 @@ fun SuperheroSearchApp() {
                                     .padding(end = 16.dp)
                             )
 
-                            // Info a la derecha
                             Column(modifier = Modifier.weight(1f)) {
                                 Text("Nombre: ${hero.name}", style = MaterialTheme.typography.titleMedium)
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -104,6 +106,7 @@ fun SuperheroSearchApp() {
         }
     }
 }
+
 
 @Composable
 expect fun HeroImageView(url: String, modifier: Modifier = Modifier)

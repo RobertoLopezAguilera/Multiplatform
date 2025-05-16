@@ -14,19 +14,29 @@ plugins {
 kotlin {
     androidTarget()
     jvm("desktop")
+    wasmJs {
+        browser {
+            testTask {
+                useMocha()
+            }
+        }
+        binaries.executable() // ← necesario para generar ejecutable web
+    }
     jvmToolchain(11)
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("io.ktor:ktor-client-core:2.3.11")
             implementation("io.ktor:ktor-client-okhttp:2.3.11")
-
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.11")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.11")
             implementation("io.coil-kt:coil-compose:2.5.0")
-
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -36,11 +46,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            // 🔽 API consumption dependencies
-            implementation("io.ktor:ktor-client-core:2.3.11")
-            implementation("io.ktor:ktor-client-content-negotiation:2.3.11")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.11")
         }
 
         commonTest.dependencies {
@@ -49,10 +54,17 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation("io.ktor:ktor-client-core:2.3.11")
             implementation("io.ktor:ktor-client-okhttp:2.3.11")
-
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.11")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.11")
             implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.9.4")
         }
+        wasmJsMain.dependencies {
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            //implementation("org.jetbrains.kotlin-wrappers:kotlin-browser:1.0.0-pre.576")
+        }
+
     }
 }
 

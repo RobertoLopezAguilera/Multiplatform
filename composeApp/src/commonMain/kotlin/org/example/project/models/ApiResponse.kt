@@ -1,6 +1,5 @@
 package org.example.project.models
 
-import androidx.compose.ui.Modifier
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
