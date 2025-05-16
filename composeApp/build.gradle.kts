@@ -8,17 +8,13 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-    
+    androidTarget()
     jvm("desktop")
+    jvmToolchain(11)
     
     sourceSets {
         val desktopMain by getting
@@ -42,6 +38,7 @@ kotlin {
             implementation("io.ktor:ktor-client-core:2.3.11")
             implementation("io.ktor:ktor-client-content-negotiation:2.3.11")
             implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.11")
+            
         }
 
         commonTest.dependencies {
@@ -53,6 +50,7 @@ kotlin {
 
             // 🔽 Ktor client for desktop (JVM)
             implementation("io.ktor:ktor-client-okhttp:2.3.11")
+
         }
 
     }

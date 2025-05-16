@@ -10,9 +10,15 @@ data class ApiResponse(
 )
 
 @Serializable
+data class HeroImage(
+    val url: String
+)
+
+@Serializable
 data class Hero(
     val id: String,
     val name: String,
+    val image: HeroImage,
     val powerstats: PowerStats,
     val biography: Biography,
     val appearance: Appearance
