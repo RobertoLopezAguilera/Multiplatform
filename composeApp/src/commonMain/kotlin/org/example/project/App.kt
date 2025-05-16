@@ -69,11 +69,11 @@ fun SuperheroSearchApp() {
                     val hero = superheroList[index]
                     Column(Modifier.padding(8.dp)) {
                         Text("Nombre: ${hero.name}", style = MaterialTheme.typography.titleMedium)
+                        Text("Imagen: ${hero.image}")
                         Text("Altura: ${hero.appearance.height.joinToString()}")
                         Text("Peso: ${hero.appearance.weight.joinToString()}")
                         Text("Inteligencia: ${hero.powerstats.intelligence}")
                         Text("Fuerza: ${hero.powerstats.strength}")
-                        Divider(Modifier.padding(vertical = 4.dp))
                     }
                 }
             }
