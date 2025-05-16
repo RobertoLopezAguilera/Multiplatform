@@ -23,6 +23,9 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation("io.ktor:ktor-client-okhttp:2.3.11")
+
+            implementation("io.coil-kt:coil-compose:2.5.0")
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -46,11 +49,10 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-
-            // 🔽 Ktor client for desktop (JVM)
             implementation("io.ktor:ktor-client-okhttp:2.3.11")
-        }
 
+            implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.9.4")
+        }
     }
 }
 

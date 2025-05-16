@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.example.project.models.Hero
+import org.example.project.models.HeroImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -67,16 +68,42 @@ fun SuperheroSearchApp() {
             LazyColumn {
                 items(superheroList.size) { index ->
                     val hero = superheroList[index]
-                    Column(Modifier.padding(8.dp)) {
-                        Text("Nombre: ${hero.name}", style = MaterialTheme.typography.titleMedium)
-                        Text("Imagen: ${hero.image}")
-                        Text("Altura: ${hero.appearance.height.joinToString()}")
-                        Text("Peso: ${hero.appearance.weight.joinToString()}")
-                        Text("Inteligencia: ${hero.powerstats.intelligence}")
-                        Text("Fuerza: ${hero.powerstats.strength}")
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Imagen a la izquierda
+                            HeroImageView(
+                                url = hero.image.url,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(end = 16.dp)
+                            )
+
+                            // Info a la derecha
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text("Nombre: ${hero.name}", style = MaterialTheme.typography.titleMedium)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("Altura: ${hero.appearance.height.joinToString()}")
+                                Text("Peso: ${hero.appearance.weight.joinToString()}")
+                                Text("Inteligencia: ${hero.powerstats.intelligence}")
+                                Text("Fuerza: ${hero.powerstats.strength}")
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
+
+@Composable
+expect fun HeroImageView(url: String, modifier: Modifier = Modifier)
