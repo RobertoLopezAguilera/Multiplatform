@@ -22,7 +22,7 @@ fun App() {
 
 @Composable
 fun SuperheroSearchApp() {
-    val repository = remember { provideSuperheroRepository() }
+    val repository = remember { SuperheroRepository() }
 
     var superheroName by remember { mutableStateOf("") }
     var superheroList by remember { mutableStateOf<List<Hero>>(emptyList()) }

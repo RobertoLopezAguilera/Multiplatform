@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     kotlin("plugin.serialization") version "1.9.22"
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27" apply false
     id("de.jensklingenberg.ktorfit") version "2.5.1"
 }
 
@@ -53,6 +54,7 @@ kotlin {
             implementation("io.ktor:ktor-client-core:3.1.2")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.2")
             implementation("io.ktor:ktor-client-content-negotiation:3.1.2")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
         }
 
         commonTest.dependencies {
@@ -69,6 +71,7 @@ kotlin {
         }
         wasmJsMain.dependencies {
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:$ktorfitVersion")
         }
 
     }

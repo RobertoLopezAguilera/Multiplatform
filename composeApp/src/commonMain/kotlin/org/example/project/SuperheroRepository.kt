@@ -8,7 +8,7 @@ import kotlinx.serialization.json.Json
 import org.example.project.api.SuperheroApi
 import org.example.project.models.Hero
 
-class SuperheroRepository : SuperheroRepository {
+class SuperheroRepository {
 
     private val ACCESS_TOKEN = "0e4e8170625bc10329009aabae104089"
 
@@ -28,8 +28,9 @@ class SuperheroRepository : SuperheroRepository {
 
     private val api = ktorfit.create<SuperheroApi>()
 
-    override suspend fun getSuperheroes(name: String): List<Hero> {
+    suspend fun getSuperheroes(name: String): List<Hero> {
         val response = api.searchHeroes(ACCESS_TOKEN, name)
         return response.results
     }
 }
+
