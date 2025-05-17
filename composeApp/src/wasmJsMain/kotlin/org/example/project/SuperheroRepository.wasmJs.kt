@@ -2,6 +2,7 @@ package org.example.project
 
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
@@ -28,13 +29,25 @@ class KtorfitSuperheroRepository : SuperheroRepository {
 }
 
 
-interface SuperheroApiService {
-    @GET("api.php/{access_token}/search/{name}")
-    suspend fun searchHero(
-        @Path("access_token") accessToken: String,
-        @Path("name") name: String
-    ): List<Hero>
+interface ApiService {
+
+    @GET("users")
+    suspend fun getUsers(): List<Hero>
+
+    @GET("user/{id}")
+    suspend fun getUserById(@Path("id") userId: Int): Hero
+
+    @POST("login")
+    suspend fun loginUser(@Body request: LoginRequest): AuthResponse
+
+    @Multipart
+    @POST("upload")
+    suspend fun uploadImage(
+        @Part("description") description: String,
+        @Part("image") image: List<PartData>
+    ): UploadResponse
 }
+
 
 actual fun provideSuperheroRepository(): SuperheroRepository = KtorfitSuperheroRepository()
 
