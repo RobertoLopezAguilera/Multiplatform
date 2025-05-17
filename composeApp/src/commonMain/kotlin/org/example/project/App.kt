@@ -90,7 +90,6 @@ fun SuperheroSearchApp() {
                                     .size(100.dp)
                                     .padding(end = 16.dp)
                             )
-
                             Column(modifier = Modifier.weight(1f)) {
                                 Text("Nombre: ${hero.name}", style = MaterialTheme.typography.titleMedium)
                                 Spacer(modifier = Modifier.height(4.dp))

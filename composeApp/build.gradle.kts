@@ -8,7 +8,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "2.0.21"
+    id("com.google.devtools.ksp") version "2.1.21-2.0.1"
+    id("de.jensklingenberg.ktorfit") version "2.5.1"
 }
 
 kotlin {
@@ -23,7 +25,7 @@ kotlin {
         binaries.executable() // ← necesario para generar ejecutable web
     }
     jvmToolchain(11)
-
+    val ktorfitVersion = "2.5.1"
     sourceSets {
         val desktopMain by getting
 
@@ -63,6 +65,7 @@ kotlin {
         wasmJsMain.dependencies {
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             //implementation("org.jetbrains.kotlin-wrappers:kotlin-browser:1.0.0-pre.576")
+            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:$ktorfitVersion")
         }
 
     }
@@ -97,7 +100,16 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+
+    // KSP para Android
+    add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
+
+    // KSP para Desktop (si lo vas a usar también en JVM Desktop)
+    add("kspDesktop", "de.jensklingenberg.ktorfit:ktorfit-ksp:2.5.1")
+
+    // KSP para JS no es compatible aún, así que se omite
 }
+
 
 compose.desktop {
     application {
