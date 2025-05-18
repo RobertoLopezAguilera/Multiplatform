@@ -1,55 +1,51 @@
 package org.example.project
 
-import de.jensklingenberg.ktorfit.Ktorfit
-import de.jensklingenberg.ktorfit.http.Body
-import de.jensklingenberg.ktorfit.http.GET
-import de.jensklingenberg.ktorfit.http.POST
-import de.jensklingenberg.ktorfit.http.Path
-import io.ktor.client.*
-import io.ktor.client.engine.js.*
+import kotlinx.coroutines.CompletableDeferred
 import org.example.project.models.Hero
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import org.example.project.models.ApiResponse
 
-class KtorfitSuperheroRepository : SuperheroRepository {
-
-    private val token = "0e4e8170625bc10329009aabae104089"
-
-    private val ktorfit = Ktorfit.Builder()
-        .baseUrl("https://www.superheroapi.com/")
-        .httpClient(HttpClient(Js)) // para WASM
-        .converterFactories(HeroFactory())
-        .build()
-
-    //error
-    //private val api = ktorfit.createSuperheroApiService()
-
-    private val api = ktorfit.create<SuperheroApiService>()
-
+class JsSuperheroRepository : SuperheroRepository {
     override suspend fun getSuperheroes(name: String): List<Hero> {
-        return api.searchHero(token, name)
+        val deferred = CompletableDeferred<List<Hero>>()
+        HeroResultHolder.setDeferred(deferred)
+
+        fetchHeroes(name)  // en lugar de js("fetchHeroes(name)")
+
+        return deferred.await()
+    }
+
+}
+
+object HeroResultHolder {
+    private var deferred: CompletableDeferred<List<Hero>>? = null
+
+    fun setDeferred(newDeferred: CompletableDeferred<List<Hero>>) {
+        deferred = newDeferred
+    }
+
+    fun provideResult(json: String) {
+        try {
+            val apiResponse = Json.decodeFromString<ApiResponse>(json)
+            deferred?.complete(apiResponse.results)
+        } catch (e: Throwable) {
+            println("Error al parsear JSON desde JS: ${e.message}")
+            deferred?.complete(emptyList())
+        } finally {
+            deferred = null
+        }
+    }
+
+}
+
+object HeroBridge {
+    @JsName("sendHeroesFromJs")
+    fun sendHeroesFromJs(jsonString: String) {
+        HeroResultHolder.provideResult(jsonString)
     }
 }
 
+external fun fetchHeroes(name: String)
 
-interface ApiService {
-
-    @GET("users")
-    suspend fun getUsers(): List<Hero>
-
-    @GET("user/{id}")
-    suspend fun getUserById(@Path("id") userId: Int): Hero
-
-    @POST("login")
-    suspend fun loginUser(@Body request: LoginRequest): AuthResponse
-
-    @Multipart
-    @POST("upload")
-    suspend fun uploadImage(
-        @Part("description") description: String,
-        @Part("image") image: List<PartData>
-    ): UploadResponse
-}
-
-
-actual fun provideSuperheroRepository(): SuperheroRepository = KtorfitSuperheroRepository()
-
-
+actual fun provideSuperheroRepository(): SuperheroRepository = JsSuperheroRepository()
